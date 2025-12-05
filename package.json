@@ -1,0 +1,176 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "downloads-manager-win",
+  "title": "Downloads Manager",
+  "description": "Search and organize your downloads - Windows Edition",
+  "icon": "icon.png",
+  "author": "bgraciotti",
+  "license": "MIT",
+  "version": "1.0.0",
+  "categories": [
+    "Productivity",
+    "System"
+  ],
+  "commands": [
+    {
+      "name": "manage-downloads",
+      "title": "Manage Downloads",
+      "description": "View and organize your downloads",
+      "mode": "view",
+      "preferences": [
+        {
+          "name": "downloadsFolder",
+          "type": "textfield",
+          "required": false,
+          "title": "Downloads Folder",
+          "description": "Path to your downloads folder",
+          "default": "",
+          "placeholder": "C:\\Users\\{username}\\Downloads"
+        },
+        {
+          "name": "fileOrder",
+          "type": "dropdown",
+          "required": false,
+          "title": "File Order",
+          "description": "How to sort files in the list",
+          "default": "modifiedTime",
+          "data": [
+            {
+              "title": "Modified Time",
+              "value": "modifiedTime"
+            },
+            {
+              "title": "Created Time",
+              "value": "createTime"
+            },
+            {
+              "title": "Added Time",
+              "value": "addTime"
+            }
+          ]
+        },
+        {
+          "name": "latestDownloadOrder",
+          "type": "dropdown",
+          "required": false,
+          "title": "Latest Download Order",
+          "description": "How to determine the latest download",
+          "default": "modifiedTime",
+          "data": [
+            {
+              "title": "Modified Time",
+              "value": "modifiedTime"
+            },
+            {
+              "title": "Created Time",
+              "value": "createTime"
+            },
+            {
+              "title": "Added Time",
+              "value": "addTime"
+            },
+            {
+              "title": "Birth Time",
+              "value": "birthTime"
+            }
+          ]
+        },
+        {
+          "name": "showHiddenFiles",
+          "type": "checkbox",
+          "required": false,
+          "title": "Show Hidden Files",
+          "description": "Show files starting with a dot",
+          "default": false,
+          "label": "Show hidden files"
+        },
+        {
+          "name": "downloadsLayout",
+          "type": "dropdown",
+          "required": false,
+          "title": "Layout",
+          "description": "Choose between list or grid view",
+          "default": "list",
+          "data": [
+            {
+              "title": "List",
+              "value": "list"
+            },
+            {
+              "title": "Grid",
+              "value": "grid"
+            }
+          ]
+        },
+        {
+          "name": "deletionBehavior",
+          "type": "dropdown",
+          "required": false,
+          "title": "Deletion Behavior",
+          "description": "Choose how to delete files",
+          "default": "trash",
+          "data": [
+            {
+              "title": "Move to Recycle Bin",
+              "value": "trash"
+            },
+            {
+              "title": "Permanently Delete",
+              "value": "permanent"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "open-latest-download",
+      "title": "Open Latest Download",
+      "description": "Open the most recently downloaded file",
+      "mode": "no-view"
+    },
+    {
+      "name": "copy-latest-download",
+      "title": "Copy Latest Download",
+      "description": "Copy the most recently downloaded file to clipboard",
+      "mode": "no-view"
+    },
+    {
+      "name": "paste-latest-download",
+      "title": "Paste Latest Download",
+      "description": "Paste the most recently downloaded file",
+      "mode": "no-view"
+    },
+    {
+      "name": "show-latest-download",
+      "title": "Show Latest Download in Explorer",
+      "description": "Show the most recently downloaded file in Windows Explorer",
+      "mode": "no-view"
+    },
+    {
+      "name": "delete-latest-download",
+      "title": "Delete Latest Download",
+      "description": "Delete the most recently downloaded file",
+      "mode": "no-view"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.94.0",
+    "@raycast/utils": "^2.2.2"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.11",
+    "@types/node": "20.8.10",
+    "@types/react": "18.3.3",
+    "eslint": "^8.51.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "build": "ray build --skip-types -e dist -o dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "prepublishOnly": "echo \"\\n\\nIt seems like you are trying to publish the Raycast extension to npm.\\n\\nIf you did intend to publish it to npm, remove the \\`prepublishOnly\\` script and rerun \\`npm publish\\` again.\\nIf you wanted to publish it to the Raycast Store instead, use \\`npm run publish\\` instead.\\n\\n\" && exit 1",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}
