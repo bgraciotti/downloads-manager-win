@@ -106,13 +106,21 @@ downloads-manager-win/
 │   └── icon.png                    # Extension icon
 ├── package.json                    # Extension configuration
 ├── tsconfig.json                   # TypeScript configuration
-├── CHANGELOG.md                    # Version history
 └── README.md                       # This file
 ```
 
 ## Changelog
 
-See [CHANGELOG.md](./CHANGELOG.md) for detailed version history.
+### Version 1.0.0
+- 🚀 **Initial release**: Windows-adapted version of the Downloads Manager extension
+- 📋 **Manage Downloads**: View and organize downloads in List or Grid view
+- ⚡ **Quick actions**: Open, Copy, Paste, Show in Explorer, Delete latest download
+- 🎨 **Dual view modes**: Toggle between List view (detailed) and Grid view (visual)
+- 🖼️ **Image previews**: Automatic thumbnails for PNG, JPG, GIF, WebP, BMP, TIFF, HEIC, SVG
+- 🔄 **Smart sorting**: Sort by Modified Time, Created Time, or Added Time
+- ⚙️ **Flexible config**: Custom folder, hidden files, deletion behavior, default layout
+- ⌨️ **Windows shortcuts**: All shortcuts use Ctrl instead of Cmd
+- 📁 **Explorer integration**: Native integration with Windows file system
 
 ## Differences from macOS Version
 
