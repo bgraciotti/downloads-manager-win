@@ -32,34 +32,41 @@ export function isImageFile(filename: string): boolean {
   return imageExtensions.includes(ext);
 }
 
-export function getDownloads() {
+export function getDownloads(folder?: string) {
+  const targetFolder = folder || downloadsFolder;
   try {
-    const files = readdirSync(downloadsFolder);
-    return files
+    const files = readdirSync(targetFolder);
+    const items = files
       .filter((file) => showHiddenFiles || !file.startsWith("."))
       .map((file) => {
-        const path = join(downloadsFolder, file);
+        const path = join(targetFolder, file);
         const stats = statSync(path);
         return {
           file,
           path,
+          isDirectory: stats.isDirectory(),
           lastModifiedAt: stats.mtime,
           createdAt: stats.ctime,
           addedAt: stats.atime,
           birthAt: stats.birthtime,
         };
-      })
-      .sort((a, b) => {
-        switch (fileOrder) {
-          case "addTime":
-            return b.addedAt.getTime() - a.addedAt.getTime();
-          case "createTime":
-            return b.createdAt.getTime() - a.createdAt.getTime();
-          case "modifiedTime":
-          default:
-            return b.lastModifiedAt.getTime() - a.lastModifiedAt.getTime();
-        }
       });
+
+    // Sort: folders first, then by file order
+    return items.sort((a, b) => {
+      if (a.isDirectory !== b.isDirectory) {
+        return a.isDirectory ? -1 : 1;
+      }
+      switch (fileOrder) {
+        case "addTime":
+          return b.addedAt.getTime() - a.addedAt.getTime();
+        case "createTime":
+          return b.createdAt.getTime() - a.createdAt.getTime();
+        case "modifiedTime":
+        default:
+          return b.lastModifiedAt.getTime() - a.lastModifiedAt.getTime();
+      }
+    });
   } catch (error) {
     console.error("Error reading downloads folder:", error);
     return [];

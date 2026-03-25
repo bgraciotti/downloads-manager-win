@@ -1,45 +1,59 @@
-import { ActionPanel, Action, List, Grid, Icon } from "@raycast/api";
-import { PathLike } from "fs";
+import { ActionPanel, Action, List, Grid, Icon, useNavigation } from "@raycast/api";
+import { basename } from "path";
 import { useState } from "react";
 import { defaultDownloadsLayout, downloadsFolder, getDownloads, isImageFile, hasAccessToDownloadsFolder } from "./utils";
 
-export default function Command() {
-  // Check folder access
-  if (!hasAccessToDownloadsFolder()) {
-    return (
-      <List>
-        <List.EmptyView
-          icon={Icon.ExclamationMark}
-          title="Cannot Access Downloads Folder"
-          description={`Please check if the folder exists:\n${downloadsFolder}`}
-        />
-      </List>
-    );
-  }
+interface FolderViewProps {
+  folder: string;
+}
 
-  const [downloads, setDownloads] = useState(getDownloads());
+function FolderView({ folder }: FolderViewProps) {
+  const { pop } = useNavigation();
+  const [downloads, setDownloads] = useState(getDownloads(folder));
   const [downloadsLayout, setDownloadsLayout] = useState<string>(defaultDownloadsLayout);
 
-  function handleTrash(paths: PathLike | PathLike[]) {
+  function handleTrash(paths: string | string[]) {
     setDownloads((downloads) =>
       downloads.filter((download) => (Array.isArray(paths) ? !paths.includes(download.path) : paths !== download.path)),
     );
   }
 
   function handleReload() {
-    setDownloads(getDownloads());
+    setDownloads(getDownloads(folder));
   }
+
+  const searchBarPlaceholder = folder === downloadsFolder
+    ? "Search downloads..."
+    : `Search in ${basename(folder)}...`;
 
   const actions = (download: ReturnType<typeof getDownloads>[number]) => (
     <ActionPanel>
       <ActionPanel.Section>
-        <Action.Open title="Open" icon={Icon.Document} target={download.path} />
+        {download.isDirectory ? (
+          <>
+            <Action.Push
+              title="Open Folder"
+              icon={Icon.ArrowRight}
+              target={<FolderView folder={download.path} />}
+            />
+            <Action.Push
+              title="Open Folder"
+              icon={Icon.ArrowRight}
+              shortcut={{ modifiers: [], key: "tab" }}
+              target={<FolderView folder={download.path} />}
+            />
+          </>
+        ) : (
+          <Action.Open title="Open" icon={Icon.Document} target={download.path} />
+        )}
         <Action.ShowInFinder
           title="Show in File Explorer"
           path={download.path}
           shortcut={{ modifiers: ["ctrl"], key: "enter" }}
         />
-        <Action.OpenWith path={download.path} shortcut={{ modifiers: ["ctrl"], key: "o" }} />
+        {!download.isDirectory && (
+          <Action.OpenWith path={download.path} shortcut={{ modifiers: ["ctrl"], key: "o" }} />
+        )}
         <Action.CopyToClipboard
           title="Copy File"
           content={{ file: download.path }}
@@ -47,6 +61,14 @@ export default function Command() {
         />
       </ActionPanel.Section>
       <ActionPanel.Section>
+        {folder !== downloadsFolder && (
+          <Action
+            title="Go Back"
+            icon={Icon.ArrowLeft}
+            shortcut={{ modifiers: ["shift"], key: "tab" }}
+            onAction={() => pop()}
+          />
+        )}
         <Action
           title="Reload Downloads"
           icon={Icon.ArrowClockwise}
@@ -78,9 +100,9 @@ export default function Command() {
   );
 
   const emptyViewProps = {
-    icon: { fileIcon: downloadsFolder },
-    title: "No downloads found",
-    description: "Well, first download some files ¯\\_(ツ)_/¯",
+    icon: { fileIcon: folder },
+    title: "No files found",
+    description: folder === downloadsFolder ? "Well, first download some files ¯\\_(ツ)_/¯" : "This folder is empty",
   };
 
   const getItemProps = (download: ReturnType<typeof getDownloads>[number]) => ({
@@ -91,13 +113,19 @@ export default function Command() {
 
   if (downloadsLayout === "grid") {
     return (
-      <Grid columns={5} fit={Grid.Fit.Contain} inset={Grid.Inset.Medium}>
+      <Grid columns={5} fit={Grid.Fit.Contain} inset={Grid.Inset.Medium} searchBarPlaceholder={searchBarPlaceholder}>
         {downloads.length === 0 && <Grid.EmptyView {...emptyViewProps} />}
         {downloads.map((download) => (
           <Grid.Item
             key={download.path}
             {...getItemProps(download)}
-            content={isImageFile(download.file) ? { source: download.path } : { fileIcon: download.path }}
+            content={
+              download.isDirectory
+                ? { fileIcon: download.path }
+                : isImageFile(download.file)
+                  ? { source: download.path }
+                  : { fileIcon: download.path }
+            }
           />
         ))}
       </Grid>
@@ -105,7 +133,7 @@ export default function Command() {
   }
 
   return (
-    <List>
+    <List searchBarPlaceholder={searchBarPlaceholder}>
       {downloads.length === 0 && <List.EmptyView {...emptyViewProps} />}
       {downloads.map((download) => (
         <List.Item
@@ -122,4 +150,20 @@ export default function Command() {
       ))}
     </List>
   );
+}
+
+export default function Command() {
+  if (!hasAccessToDownloadsFolder()) {
+    return (
+      <List>
+        <List.EmptyView
+          icon={Icon.ExclamationMark}
+          title="Cannot Access Downloads Folder"
+          description={`Please check if the folder exists:\n${downloadsFolder}`}
+        />
+      </List>
+    );
+  }
+
+  return <FolderView folder={downloadsFolder} />;
 }

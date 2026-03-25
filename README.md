@@ -20,6 +20,7 @@ Downloads Manager is a Raycast extension designed specifically for Windows users
 - **🔄 Smart Sorting** - Sort by Modified Time, Created Time, or Added Time
 - **🗑️ Flexible Deletion** - Choose between moving to Recycle Bin or permanent deletion
 - **👁️ Hidden Files Toggle** - Show or hide hidden files (starting with a dot)
+- **📂 Folder Navigation** - Drill into subfolders and navigate back seamlessly
 - **📁 Custom Folder** - Configure a custom downloads folder path
 
 ## How to Install
@@ -71,7 +72,10 @@ Use these commands for instant access to your latest download:
 
 | Shortcut | Action |
 |----------|--------|
-| **Enter** | Open selected file |
+| **Enter** | Open selected file / Enter folder |
+| **Tab** | Enter folder |
+| **Shift+Tab** | Go back to parent folder |
+| **Esc** | Go back to parent folder |
 | **Ctrl+O** | Open with... (choose application) |
 | **Ctrl+Shift+C** | Copy file to clipboard |
 | **Ctrl+L** | Toggle between List and Grid view |
@@ -110,6 +114,12 @@ downloads-manager-win/
 ```
 
 ## Changelog
+
+### Version 1.1.0
+- 🚀 **Folder navigation**: Browse into subfolders directly within the extension
+- ⌨️ **Navigation shortcuts**: Enter/Tab to open folder, Shift+Tab/Esc to go back
+- 📂 **Folders first**: Folders are always sorted before files in the list
+- ✨ **Native navigation stack**: Uses Raycast's built-in push/pop navigation for smooth drill-down
 
 ### Version 1.0.0
 - 🚀 **Initial release**: Windows-adapted version of the Downloads Manager extension
